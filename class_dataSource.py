@@ -40,6 +40,12 @@ class Communicate(QObject):
     
 class Example(QWidget):
     
+    timer_speed = 10;
+    offset = 0;
+    pitch = 0;
+    
+    
+    
     def __init__(self):
         """ call the instructor of QWidget """
         super().__init__()
@@ -68,6 +74,9 @@ class Example(QWidget):
         
         self.buttons.start_sig.connect(self.toggleTimer)
         self.buttons.reset_sig.connect(self.resetTimer)
+        self.buttons.set_speed.connect(self.set_speed)
+        self.buttons.set_offset.connect(self.set_offset)
+        self.buttons.set_pitch.connect(self.set_pitch)
         
         self.setLayout(hbox)
         
@@ -103,13 +112,28 @@ class Example(QWidget):
         print("toggleTimer clicked")
         
         if self.b_start == False:
-            self.timer.start(10, self)
+            self.timer.start(self.timer_speed, self)
+            print("Start ModBus:\nOffset = " + str(self.offset))
+            print("Pitch = " + str(self.pitch))
+            
             self.b_start = True
         else:
             self.timer.stop()
             self.b_start = False
+            
+    def set_speed(self, float, option):
+        print("Set speed to " + str(float) + " option: " + str(option))
+        
 
-    
+    def set_pitch(self, new_pitch):
+        
+        print("Set pitch to: " + str(new_pitch))
+        self.pitch = new_pitch
+        
+    def set_offset(self, new_offset):
+        
+        print("Set offset to: " + str(new_offset))
+        self.offset = new_offset
         
     def closeEvent(self, event):
         

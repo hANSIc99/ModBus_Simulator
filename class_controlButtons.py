@@ -23,10 +23,11 @@ class controlButtons(QFrame):
     
     start_sig = pyqtSignal()
     reset_sig = pyqtSignal()
-    """
-    Baustelle
-    set_speed = pyqtSignal(QString)
-    """
+    
+    set_speed   =    pyqtSignal(float, int)
+    set_offset  =    pyqtSignal(float)
+    set_pitch   =    pyqtSignal(float)
+    
     
     def __init__(self):
         """ call the instructor of QWidget """
@@ -72,33 +73,60 @@ class controlButtons(QFrame):
         lbl_speed = QLabel('Speed', self)
         lbl_speed.move(15, 100)
         
-        speed_box = QComboBox(self)
-        speed_box.addItem("rad/s")
-        speed_box.addItem("rpm")
-        speed_box.addItem("Hz")
-        speed_box.move(120, 120)
+        """
+        the validator is valid for all QLineEdit's
+        """
+        self.valid = QDoubleValidator(self)
+        
+        self.speed_box = QComboBox(self)
+        self.speed_box.addItem("rad/s")
+        self.speed_box.addItem("rpm")
+        self.speed_box.addItem("Hz")
+        self.speed_box.move(120, 120)
+        """
+        Connect speed_box to speed_changed to trigger an update
+        """
+        self.speed_box.currentIndexChanged.connect(self.speed_changed)
         
         self.le_pitch = QLineEdit(self)
         self.le_pitch.setMaximumWidth(70)
         self.le_pitch.move(15, 70)
+        self.le_pitch.setValidator(self.valid)
         
         self.le_offs = QLineEdit(self)
         self.le_offs.setMaximumWidth(70)
         self.le_offs.move(105, 70)
+        self.le_offs.setValidator(self.valid)
         
         self.le_speed = QLineEdit(self)
         self.le_speed.setMaximumWidth(90)
-        self.le_speed.move(15, 120)
-        self.valid = QDoubleValidator(self)
-        
+        self.le_speed.move(15, 120)               
         self.le_speed.setValidator(self.valid)
-        """
-        self.le_speed.textChanged.connect(self.speed_changed)
-        """
+        
+        self.le_speed.textChanged[str].connect(self.speed_changed)
+        self.le_offs.textChanged[str].connect(self.offset_changed)
+        self.le_pitch.textChanged[str].connect(self.pitch_changed)
+        
         """
         self.paintEvent(self)
         """
        
+    def speed_changed(self):
+        
+        result = float(self.le_speed.text())
+        option = self.speed_box.currentIndex()
+        self.set_speed.emit(result, option)
+        
+    def offset_changed(self):
+        
+        result = float(self.le_offs.text())
+        self.set_offset.emit(result)
+            
+        
+    def pitch_changed(self):
+        
+        result = float(self.le_pitch.text())
+        self.set_pitch.emit(result)
         
     def start_stop(self):
         print("Start/Stop clicked")
