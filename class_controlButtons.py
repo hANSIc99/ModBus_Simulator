@@ -12,14 +12,21 @@ from PyQt5.QtWidgets import (QApplication, QWidget,
                              QInputDialog, QColorDialog, QFrame, QFontDialog,
                              QSizePolicy, QFileDialog, QCheckBox, QProgressBar,
                              QCalendarWidget, QSplitter, QComboBox)
-from PyQt5.QtGui import QIcon, QFont, QColor, QPixmap, QPainter, QPen, QBrush
+from PyQt5.QtGui import (QIcon, QFont, QColor, QPixmap, QPainter, QPen, QBrush,
+                         QDoubleValidator)
 from PyQt5.QtCore import (QCoreApplication, Qt, QObject, pyqtSignal,
                           QBasicTimer, QDate, QPointF)
+
+from PyQt5 import QtGui
 
 class controlButtons(QFrame):
     
     start_sig = pyqtSignal()
     reset_sig = pyqtSignal()
+    """
+    Baustelle
+    set_speed = pyqtSignal(QString)
+    """
     
     def __init__(self):
         """ call the instructor of QWidget """
@@ -40,6 +47,10 @@ class controlButtons(QFrame):
         """
         self.b_start = False
         
+        """
+        Buttons
+        """
+        
         self.btn1 = QPushButton('Start', self)
         self.btn1.clicked.connect(self.start_stop)
         self.btn1.move(15, 10)
@@ -50,8 +61,44 @@ class controlButtons(QFrame):
         self.btn2.move(105, 10)
         
         """
+        Input Dialogs
+        """
+        lbl_pitch = QLabel('Pitch', self)
+        lbl_pitch.move(15, 50)
+        
+        lbl_offs = QLabel('Offset', self)
+        lbl_offs.move(105, 50)
+        
+        lbl_speed = QLabel('Speed', self)
+        lbl_speed.move(15, 100)
+        
+        speed_box = QComboBox(self)
+        speed_box.addItem("rad/s")
+        speed_box.addItem("rpm")
+        speed_box.addItem("Hz")
+        speed_box.move(120, 120)
+        
+        self.le_pitch = QLineEdit(self)
+        self.le_pitch.setMaximumWidth(70)
+        self.le_pitch.move(15, 70)
+        
+        self.le_offs = QLineEdit(self)
+        self.le_offs.setMaximumWidth(70)
+        self.le_offs.move(105, 70)
+        
+        self.le_speed = QLineEdit(self)
+        self.le_speed.setMaximumWidth(90)
+        self.le_speed.move(15, 120)
+        self.valid = QDoubleValidator(self)
+        
+        self.le_speed.setValidator(self.valid)
+        """
+        self.le_speed.textChanged.connect(self.speed_changed)
+        """
+        """
         self.paintEvent(self)
         """
+       
         
     def start_stop(self):
         print("Start/Stop clicked")
