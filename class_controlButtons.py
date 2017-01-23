@@ -79,7 +79,7 @@ class controlButtons(QFrame):
         self.valid = QDoubleValidator(self)
         
         self.speed_box = QComboBox(self)
-        self.speed_box.addItem("rad/s")
+        self.speed_box.addItem("rad/min")
         self.speed_box.addItem("rpm")
         self.speed_box.addItem("Hz")
         self.speed_box.move(120, 120)
@@ -102,6 +102,7 @@ class controlButtons(QFrame):
         self.le_speed.setMaximumWidth(90)
         self.le_speed.move(15, 120)               
         self.le_speed.setValidator(self.valid)
+        self.le_speed.setText("1")
         
         self.le_speed.textChanged[str].connect(self.speed_changed)
         self.le_offs.textChanged[str].connect(self.offset_changed)

@@ -40,9 +40,17 @@ class Communicate(QObject):
     
 class Example(QWidget):
     
-    timer_speed = 10;
+    """
+    const (not changeable yet)
+    """
+    timer_speed = 100;
+    timer_step = 0.1;
     offset = 0;
     pitch = 0;
+    speed_opt = 0;
+    speed_value = 0;
+    speed_mode = ["rad/min", "rpm", "Hz"]
+
     
     
     
@@ -103,7 +111,7 @@ class Example(QWidget):
         if self.step >= 2* math.pi:
            self.step = 0
         
-        self.step = self.step + 0.01
+        self.step = self.step + self.timer_step
         self.ptr.setValue(self.step)
 
 
@@ -115,15 +123,33 @@ class Example(QWidget):
             self.timer.start(self.timer_speed, self)
             print("Start ModBus:\nOffset = " + str(self.offset))
             print("Pitch = " + str(self.pitch))
+            print("Speed = " + str(self.speed_value) + " " + self.speed_mode[self.speed_opt])
             
             self.b_start = True
         else:
             self.timer.stop()
             self.b_start = False
             
-    def set_speed(self, float, option):
-        print("Set speed to " + str(float) + " option: " + str(option))
-        
+    def set_speed(self, value, option):
+
+        print("Set speed to " + str(value) + " option: " + str(option))
+        self.speed_opt = option
+        self.speed_value = value
+        if option == 0:
+
+            self.timer_step = value / 600
+
+        elif option == 1:
+            """
+            600 =^ 1 min (timer step = 100 ms)
+            """
+            self.timer_step = (math.pi * 2.0 * value  ) / 600
+        elif option == 2:
+            
+            """
+            60 =^ 1 sec (timer step = 100 ms)
+            """
+            self.timer_step = (2.0 * value  ) / 600
 
     def set_pitch(self, new_pitch):
         
@@ -134,7 +160,7 @@ class Example(QWidget):
         
         print("Set offset to: " + str(new_offset))
         self.offset = new_offset
-        
+    """    
     def closeEvent(self, event):
         
         reply = QMessageBox.question(self, 'Message',
@@ -144,7 +170,7 @@ class Example(QWidget):
             event.accept()
         else:
             event.ignore()
-        
+   """     
 
 """ class inherits from QWidget """
 
