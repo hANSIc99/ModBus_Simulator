@@ -15,7 +15,7 @@ This is a temporary script file.
 from class_pointer import PointerWidget
 from class_controlButtons import controlButtons
 from class_graph import graph
-
+from class_ModBusClient import ModBusClient
 
 
 import sys, random, math
@@ -70,13 +70,13 @@ class Example(QWidget):
         self.ptr = PointerWidget()     
         self.ptr.setValue(0.0)
         self.buttons = controlButtons()
-        self.graph = graph()
+        self.modbus = ModBusClient()
         
         
         hbox = QHBoxLayout()
         hbox.addWidget(self.buttons)
         hbox.addWidget(self.ptr)
-        hbox.addWidget(self.graph)
+        hbox.addWidget(self.modbus)
         hbox.setAlignment(Qt.AlignLeft)
         hbox.setAlignment(Qt.AlignTop)
         
