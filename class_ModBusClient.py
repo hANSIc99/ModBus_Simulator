@@ -25,8 +25,15 @@ from pymodbus.client.async import ModbusClientProtocol
 from pymodbus.datastore import ModbusSlaveContext, ModbusServerContext
 
 from pymodbus.datastore import ModbusSequentialDataBlock
-from pymodbus.server.async import StartTcpServer
+from pymodbus.server.async import StartTcpServer, ModbusServerFactory
+
+from pymodbus.transaction import ModbusSocketFramer
+
 import logging
+
+from multiprocessing import Queue
+
+from threading import Thread
 
 from PyQt5 import QtGui
 
@@ -50,20 +57,53 @@ class ModBusClient(QFrame):
         self.setMaximumSize(200, 150)
         self.setFrameStyle(QFrame.Panel)
        
+        
+        """hr = holding register"""
+        
         store = ModbusSlaveContext(
             di = ModbusSequentialDataBlock(0, [17]*100),
-            co = ModbusSequentialDataBlock(0, [17]*100),
-            """"hr = holding register"""
+            co = ModbusSequentialDataBlock(0, [17]*100),    
             hr = ModbusSequentialDataBlock(0, [17]*100),
             ir = ModbusSequentialDataBlock(0, [17]*100))
         
         context = ModbusServerContext(slaves=store, single=True)
         
 
-       
-        StartTcpServer(context)
+
+        address = "", Defaults.Port
+        framer  = ModbusSocketFramer
+        factory = ModbusServerFactory(context, framer, identity=None)
+
+
+        print("Starting Modbus TCP Server on %s:%s" % address)
+        reactor.listenTCP(address[1], factory, interface=address[0])
+        print("Start threading")
+        """
+        Reaktor starten
+        """
+        Thread(target=reactor.run).start()
         
         
+        """
+        Reaktor stoppen
+        """
+        reactor.callFromThread(reactor.stop)
+        
+        
+        
+  
+        
+        """
+        reactor.run()
+        """
+        """
+        StartTcpServer(context, console=False)
+        """
+        """
+        Thread(target=StartTcpServer, args=(context)).start()
+        
+        Thread(target=StartTcpServer, args=(context)).stop()
+        """
         print("ModBus Client initialized")
     """     
     def dassert(deferred, callback):
