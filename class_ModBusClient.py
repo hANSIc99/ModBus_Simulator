@@ -43,6 +43,8 @@ class ModBusClient(QFrame):
     log = logging.getLogger()
     log.setLevel(logging.DEBUG)
     
+    b_start = False
+    
     def __init__(self):
         """ call the instructor of QWidget """
       
@@ -56,10 +58,27 @@ class ModBusClient(QFrame):
         self.setMinimumSize(200, 150)
         self.setMaximumSize(200, 150)
         self.setFrameStyle(QFrame.Panel)
-       
         
-        """hr = holding register"""
         
+        """
+        reactor.callFromThread(reactor.stop)
+        """
+        """hr = holding register"""            
+        
+        print("Start threading")
+        """
+        Reaktor starten
+        """           
+        
+        """
+        Reaktor stoppen
+        """       
+
+        print("ModBus Client initialized")
+        
+    def client_start(self):
+        
+        print("class_ModBus Start clicked")
         store = ModbusSlaveContext(
             di = ModbusSequentialDataBlock(0, [17]*100),
             co = ModbusSequentialDataBlock(0, [17]*100),    
@@ -67,60 +86,40 @@ class ModBusClient(QFrame):
             ir = ModbusSequentialDataBlock(0, [17]*100))
         
         context = ModbusServerContext(slaves=store, single=True)
-        
-
 
         address = "", Defaults.Port
         framer  = ModbusSocketFramer
         factory = ModbusServerFactory(context, framer, identity=None)
-
-
-        print("Starting Modbus TCP Server on %s:%s" % address)
         reactor.listenTCP(address[1], factory, interface=address[0])
-        print("Start threading")
-        """
-        Reaktor starten
-        """
         Thread(target=reactor.run).start()
+        print("Starting Modbus TCP Server on %s:%s" % address)
         
+    def client_stop(self):
         
-        """
-        Reaktor stoppen
-        """
+        print("Client Stop activated")
+        
         reactor.callFromThread(reactor.stop)
         
         
+    def toggle_client(self):
         
-  
-        
-        """
-        reactor.run()
-        """
-        """
-        StartTcpServer(context, console=False)
-        """
-        """
-        Thread(target=StartTcpServer, args=(context)).start()
-        
-        Thread(target=StartTcpServer, args=(context)).stop()
-        """
-        print("ModBus Client initialized")
-    """     
-    def dassert(deferred, callback):
-        def _assertor(value, message=None):
-            assert value, message
-            deferred.addCallback(lambda r: _assertor(callback(r)))
-            deferred.addErrback(lambda  e: _assertor(False, e))
-    """
-    def process(client):
-        result = client.write_coil(1, True)
-        result.addCallback(printResult)
-        reactor.callLater(1, reactor.stop)
+        if self.b_start == False:
+            
+            print("Starting ModBus Client")
+            self.client_start()
+            self.b_start = True
+            
+        else:
+            
+            print("Stopping ModBus Client")
+            self.client_stop()
+            self.b_start = False
+ 
+            
         
         
-    def printResult(result):
-        print("Result: %d" % result.bits[0])
         
+
         
         
         

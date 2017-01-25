@@ -29,6 +29,8 @@ class controlButtons(QFrame):
     set_pitch   =    pyqtSignal(float)
     
     
+    
+    
     def __init__(self):
         """ call the instructor of QWidget """
       

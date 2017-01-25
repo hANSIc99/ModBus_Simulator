@@ -81,6 +81,7 @@ class Example(QWidget):
         hbox.setAlignment(Qt.AlignTop)
         
         self.buttons.start_sig.connect(self.toggleTimer)
+        self.buttons.start_sig.connect(self.modbus.toggle_client)
         self.buttons.reset_sig.connect(self.resetTimer)
         self.buttons.set_speed.connect(self.set_speed)
         self.buttons.set_offset.connect(self.set_offset)
