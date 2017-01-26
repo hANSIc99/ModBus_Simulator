@@ -85,14 +85,35 @@ class ModBusClient(QFrame):
             hr = ModbusSequentialDataBlock(0, [17]*100),
             ir = ModbusSequentialDataBlock(0, [17]*100))
         
-        context = ModbusServerContext(slaves=store, single=True)
+        self.context = ModbusServerContext(slaves=store, single=True)
 
         address = "", Defaults.Port
         framer  = ModbusSocketFramer
-        factory = ModbusServerFactory(context, framer, identity=None)
+        factory = ModbusServerFactory(self.context, framer, identity=None)
         reactor.listenTCP(address[1], factory, interface=address[0])
         Thread(target=reactor.run).start()
         print("Starting Modbus TCP Server on %s:%s" % address)
+        
+    def update_values(self):
+        
+        print("updating the context")
+        context  = self.context
+        register = 3
+        slave_id = 0 
+        address  = 0 
+        """
+        read values from register and 
+        add one to it
+        values = array
+        """
+        """
+        values   = context[slave_id].getValues(register, address, count=5)
+        values   = [v + 1 for v in values]
+        """
+        values = [13, 14, 13, 14, 12]
+        print("new values: " + str(values))
+        context[slave_id].setValues(register, address, values)
+        
         
     def client_stop(self):
         

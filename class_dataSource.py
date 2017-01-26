@@ -42,6 +42,7 @@ class Example(QWidget):
     
     """
     const (not changeable yet)
+    timer_speed default value = 100
     """
     timer_speed = 100;
     timer_step = 0.1;
@@ -114,6 +115,7 @@ class Example(QWidget):
         
         self.step = self.step + self.timer_step
         self.ptr.setValue(self.step)
+        self.modbus.update_values()
 
 
     def toggleTimer(self):
