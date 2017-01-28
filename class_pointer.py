@@ -21,24 +21,28 @@ import sys, random, math
 class PointerWidget(QFrame):
     
     def __init__(self):
-        """ call the instructor of QWidget """
       
         super().__init__()
       
-        """ call particular method """ 
         self.initUI()
         
     def initUI(self):        
         """ set the variables inherited from QWidget """       
         print("set pointer")
-        self.bus_value = float()
-        self.pointer = QPointF()
-        self.start_point = QPointF(70.0, 70.0)
+
         
         self.setMinimumSize(150, 150)
         self.setMaximumSize(150, 150)
         self.setFrameStyle(QFrame.Panel)
+        
+        
+        self.bus_value = float()
+        self.pointer = QPointF()
+        self.start_point = QPointF(70.0, 70.0)
+        
+        """
         self.update()
+        """
         """
         self.paintEvent(self)
         """

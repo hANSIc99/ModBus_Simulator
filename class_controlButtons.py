@@ -94,11 +94,13 @@ class controlButtons(QFrame):
         self.le_pitch.setMaximumWidth(70)
         self.le_pitch.move(15, 70)
         self.le_pitch.setValidator(self.valid)
+        self.le_pitch.setText("1")
         
         self.le_offs = QLineEdit(self)
         self.le_offs.setMaximumWidth(70)
         self.le_offs.move(105, 70)
         self.le_offs.setValidator(self.valid)
+        self.le_offs.setText("0")
         
         self.le_speed = QLineEdit(self)
         self.le_speed.setMaximumWidth(90)
@@ -110,9 +112,6 @@ class controlButtons(QFrame):
         self.le_offs.textChanged[str].connect(self.offset_changed)
         self.le_pitch.textChanged[str].connect(self.pitch_changed)
         
-        """
-        self.paintEvent(self)
-        """
        
     def speed_changed(self):
         

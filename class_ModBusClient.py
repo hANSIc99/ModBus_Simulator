@@ -43,14 +43,14 @@ class ModBusClient(QFrame):
     log = logging.getLogger()
     log.setLevel(logging.DEBUG)
     
+    context = ModbusServerContext(slaves=None, single=True)
+    
     b_start = False
     
     def __init__(self):
-        """ call the instructor of QWidget """
       
         super().__init__()
       
-        """ call particular method """ 
         self.initUI() 
       
     def initUI(self): 
@@ -59,45 +59,15 @@ class ModBusClient(QFrame):
         self.setMaximumSize(200, 150)
         self.setFrameStyle(QFrame.Panel)
         
-        
-        """
-        reactor.callFromThread(reactor.stop)
-        """
-        """hr = holding register"""            
-        
-        print("Start threading")
-        """
-        Reaktor starten
-        """           
-        
-        """
-        Reaktor stoppen
-        """       
-
         print("ModBus Client initialized")
         
-    def client_start(self):
         
-        print("class_ModBus Start clicked")
-        store = ModbusSlaveContext(
-            di = ModbusSequentialDataBlock(0, [17]*100),
-            co = ModbusSequentialDataBlock(0, [17]*100),    
-            hr = ModbusSequentialDataBlock(0, [17]*100),
-            ir = ModbusSequentialDataBlock(0, [17]*100))
-        
-        self.context = ModbusServerContext(slaves=store, single=True)
-
-        address = "", Defaults.Port
-        framer  = ModbusSocketFramer
-        factory = ModbusServerFactory(self.context, framer, identity=None)
-        reactor.listenTCP(address[1], factory, interface=address[0])
-        Thread(target=reactor.run).start()
-        print("Starting Modbus TCP Server on %s:%s" % address)
-        
-    def update_values(self):
+    def update_values(self, value):
         
         print("updating the context")
+        """
         context  = self.context
+        """
         register = 3
         slave_id = 0 
         address  = 0 
@@ -105,14 +75,15 @@ class ModBusClient(QFrame):
         read values from register and 
         add one to it
         values = array
-        """
-        """
+
         values   = context[slave_id].getValues(register, address, count=5)
         values   = [v + 1 for v in values]
         """
-        values = [13, 14, 13, 14, 12]
+        integer_vlaue = int(value)
+        values = [integer_vlaue]
         print("new values: " + str(values))
-        context[slave_id].setValues(register, address, values)
+        self.context[slave_id].setValues(register, address, values)
+        
         
         
     def client_stop(self):
@@ -121,22 +92,30 @@ class ModBusClient(QFrame):
         
         reactor.callFromThread(reactor.stop)
         
-        
+      
     def toggle_client(self):
         
         if self.b_start == False:
             
             print("Starting ModBus Client")
+            """
             self.client_start()
+            """
             self.b_start = True
             
         else:
             
             print("Stopping ModBus Client")
+            """
             self.client_stop()
+            """
             self.b_start = False
- 
             
+    
+    def set_server(self, server):
+        
+       print("Server recieved")
+       self.context = server     
         
         
         
