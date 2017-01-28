@@ -122,6 +122,9 @@ class DataClient(QWidget):
            self.step = 0
         
         self.step = self.step + self.timer_step
+        """
+        Thread(target=self.ptr.setValue, args=(self.step))
+        """
         self.ptr.setValue(self.step)
         self.calc_value(self.step)
 
@@ -132,6 +135,7 @@ class DataClient(QWidget):
         
         if self.b_start == False:
             self.timer.start(self.timer_speed, self)
+            self.log_message("Starting ModBus Client")
             print("Start ModBus:\nOffset = " + str(self.offset))
             print("Pitch = " + str(self.pitch))
             print("Speed = " + str(self.speed_value) + " " + self.speed_mode[self.speed_opt])
@@ -214,3 +218,8 @@ class DataClient(QWidget):
         Thread(target=self.modbus.update_values, args=(self.reg_0, self.reg_1, self.reg_2, self.reg_3))
         """
         self.modbus.update_values(self.reg_0, self.reg_1, self.reg_2, self.reg_3)
+        
+    def log_message(self, message):
+        
+        self.modbus.log_message(message)
+        

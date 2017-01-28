@@ -21,12 +21,13 @@ from PyQt5.QtCore import (QCoreApplication, Qt, QObject, pyqtSignal,
 from class_dataSource import DataClient
 from pymodbus.constants import Defaults
 from pymodbus.datastore import ModbusSlaveContext, ModbusServerContext
-from twisted.internet import reactor, protocol
+from twisted.internet import reactor, protocol, defer
 from threading import Thread
 from pymodbus.transaction import ModbusSocketFramer
 from pymodbus.server.async import StartTcpServer, ModbusServerFactory
 from pymodbus.datastore import ModbusSequentialDataBlock
 import atexit
+
 
 class Main(QWidget): 
     
@@ -68,7 +69,14 @@ class Main(QWidget):
         address = "", Defaults.Port
         framer  = ModbusSocketFramer
         factory = ModbusServerFactory(self.context, framer, identity=None)
+
+        factory.d = defer.Deferred()
+        factory.d.addCallBack(self.ass)
+        
         reactor.listenTCP(address[1], factory, interface=address[0])
+        
+        
+        
         Thread(target=reactor.run).start()
 
         print("Starting Modbus TCP Server on %s:%s" % address)
@@ -89,7 +97,7 @@ class Main(QWidget):
 if __name__ == '__main__':
     
     app = QApplication(sys.argv)
-        
+
     ex = Main()
     
     sys.exit(app.exec_())
