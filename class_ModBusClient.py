@@ -62,13 +62,12 @@ class ModBusClient(QFrame):
         print("ModBus Client initialized")
         
         
-    def update_values(self, value):
+    def update_values(self, reg_0, reg_1, reg_2, reg_3):
         
         print("updating the context")
-        """
-        context  = self.context
-        """
-        register = 3
+        
+        
+        function_code = 3
         slave_id = 0 
         address  = 0 
         """
@@ -79,11 +78,13 @@ class ModBusClient(QFrame):
         values   = context[slave_id].getValues(register, address, count=5)
         values   = [v + 1 for v in values]
         """
-        integer_vlaue = int(value)
-        values = [integer_vlaue]
-        print("new values: " + str(values))
-        self.context[slave_id].setValues(register, address, values)
         
+        values = [reg_0, reg_1, reg_2, reg_3]
+        """
+        values = [88, 99, 77, 5, 6]
+        """
+        print("new values: " + str(values))
+        self.context[slave_id].setValues(function_code, address, values)
         
         
     def client_stop(self):

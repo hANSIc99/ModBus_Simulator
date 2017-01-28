@@ -43,6 +43,21 @@ class Lcd(QFrame):
         self.setMaximumSize(200, 150)
         self.setFrameStyle(QFrame.Panel)
         
+        f = QFont("Arial", 10, QFont.Bold)
+        
+        lbl_0 = QLabel('Reg. 0', self)
+        lbl_0.move(5, 15)
+        lbl_0.setFont(f)
+        lbl_1 = QLabel('Reg. 1', self)
+        lbl_1.move(5, 51)
+        lbl_1.setFont(f)
+        lbl_2 = QLabel('Reg. 2', self)
+        lbl_2.move(5, 87)
+        lbl_2.setFont(f)
+        lbl_3 = QLabel('Reg. 3', self)
+        lbl_3.move(5, 123)
+        lbl_3.setFont(f)
+        
         self.reg_0 = QLCDNumber(self)
         self.reg_0.resize(140, 30)
         self.reg_0.move(50, 6)       

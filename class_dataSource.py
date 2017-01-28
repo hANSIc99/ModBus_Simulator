@@ -32,7 +32,7 @@ from PyQt5.QtCore import (QCoreApplication, Qt, QObject, pyqtSignal,
                           QBasicTimer, QDate, QPointF, pyqtSlot)
 
 from pymodbus.datastore import ModbusSlaveContext, ModbusServerContext
-
+from threading import Thread
 
 class Communicate(QObject):
     
@@ -44,7 +44,7 @@ class DataClient(QWidget):
     const (not changeable yet)
     timer_speed default value = 100
     """
-    timer_speed = 100;
+    timer_speed = 500;
     timer_step = 0.1;
     offset = 0;
     pitch = 1;
@@ -52,7 +52,6 @@ class DataClient(QWidget):
     speed_value = 0;
     speed_mode = ["rad/min", "rpm", "Hz"]
 
-    res_val = 0
     reg_0 = 0
     reg_1 = 0
     reg_2 = 0
@@ -189,50 +188,29 @@ class DataClient(QWidget):
         """
         Value = step value: max +/- 0.1
         """
-        self.res_val = math.sin(value) * self.pitch
-        self.res_val += self.offset
+        res_val = math.sin(value) * self.pitch
+        res_val += self.offset
         
-        high_word = int(self.res_val)
+        high_word = int(res_val)
         
         self.reg_0 = high_word >> 16
         self.reg_1 = high_word & 0xffff
+        """
+        maximum value from decimals = 2^32
+        """
         
-        low_word = int((self.res_val % 1) * 1e10)
+        low_word = int((res_val % 1) * 1e9)
         
         
         self.reg_2 = low_word >> 16
         self.reg_3 = low_word & 0xffff
         
         
-        """
+        
         print("low_word = " + str(low_word) + " reg_0 = " + str(self.reg_0) + " reg_1 = " + str(self.reg_1))
-        """
+        
         self.lcd.set_reg(self.reg_0, self.reg_1, self.reg_2, self.reg_3)
-        
-        
-    """    
-    def closeEvent(self, event):
-        
-        reply = QMessageBox.question(self, 'Message',
-                                     "Are you sure to quit", QMessageBox.Yes | 
-                                     QMessageBox.No, QMessageBox.No)
-        if reply == QMessageBox.Yes:
-            event.accept()
-        else:
-            event.ignore()
-   """     
-
-
-
-    
-  
-
-
-
-if __name__ == '__main__':
-    
-    app = QApplication(sys.argv)
-        
-    ex = DataClient()
-    
-    sys.exit(app.exec_())
+        """
+        Thread(target=self.modbus.update_values, args=(self.reg_0, self.reg_1, self.reg_2, self.reg_3))
+        """
+        self.modbus.update_values(self.reg_0, self.reg_1, self.reg_2, self.reg_3)

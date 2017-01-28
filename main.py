@@ -76,10 +76,14 @@ class Main(QWidget):
         
     def closeEvent(self, event):
         
-        reactor.callFromThread(reactor.stop)
-        
-        print("closing")
-        
+        reply = QMessageBox.question(self, 'Message',
+                                     "Are you sure to quit", QMessageBox.Yes | 
+                                     QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            reactor.callFromThread(reactor.stop)
+            event.accept()
+        else:
+            event.ignore()
         
         
 if __name__ == '__main__':
