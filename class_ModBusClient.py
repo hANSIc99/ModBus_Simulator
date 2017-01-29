@@ -121,57 +121,31 @@ class ModBusClient(QFrame):
         self.setMaximumSize(300, 150)
         self.setFrameStyle(QFrame.Panel)
         
-        print("ModBus Client initialized")
         
         
-    def update_values(self, reg_0, reg_1, reg_2, reg_3):
         
-        print("updating the context")
+    def update_values(self, reg_0, reg_1, reg_2, reg_3):           
         
-        function_code = 3
- 
+        function_code = 3 
        
-        values = [reg_0, reg_1, reg_2, reg_3]
-
-        print("new values: " + str(values))
+        values = [reg_0, reg_1, reg_2, reg_3]        
         self.context[self.slave_id].setValues(function_code, self.register, values)
         
         
-    def client_stop(self):
-        
-        print("Client Stop activated")
+    def client_stop(self):        
         
         reactor.callFromThread(reactor.stop)
-        
-      
-    def toggle_client(self):
-        
-        if self.b_start == False:
-            
-            print("Starting ModBus Client")
-            """
-            self.client_start()
-            """
-            self.b_start = True
-            
-        else:
-            
-            print("Stopping ModBus Client")
-            """
-            self.client_stop()
-            """
-            self.b_start = False
-            
+                    
     
     def set_server(self, server):
         
-       print("Server recieved")
        self.context = server   
        
     def set_register(self):
         
         try:
             self.register = int(self.edit_reg.text())
+            
         except ValueError:
             self.log_message("Set a valid register number.")
         

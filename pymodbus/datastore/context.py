@@ -10,7 +10,10 @@ from pymodbus.compat import iteritems, itervalues
 #---------------------------------------------------------------------------#
 import logging;
 _logger = logging.getLogger(__name__)
-
+"""
+Enable/Disable logging
+_logger.propagate = False
+"""
 
 #---------------------------------------------------------------------------#
 # Slave Contexts

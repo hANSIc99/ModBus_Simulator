@@ -24,11 +24,13 @@ class controlButtons(QFrame):
     start_sig = pyqtSignal()
     reset_sig = pyqtSignal()
     
+    log_message_sig = pyqtSignal(str)
+    
     set_speed   =    pyqtSignal(float, int)
     set_offset  =    pyqtSignal(float)
     set_pitch   =    pyqtSignal(float)
     
-    
+    options = ["rad/min", "rpm", "Hz"]
     
     
     def __init__(self):
@@ -41,7 +43,7 @@ class controlButtons(QFrame):
       
     def initUI(self):        
         """ set the variables inherited from QWidget """       
-        print("initUI controlButtons")
+        
         self.setMinimumSize(200, 150)
         self.setMaximumSize(200, 150)
         self.setFrameStyle(QFrame.Panel)
@@ -115,23 +117,33 @@ class controlButtons(QFrame):
        
     def speed_changed(self):
         
-        result = float(self.le_speed.text())
-        option = self.speed_box.currentIndex()
-        self.set_speed.emit(result, option)
-        
+        try:
+            result = float(self.le_speed.text())
+            option = self.speed_box.currentIndex()
+            self.log_message_sig.emit("Speed changed: %0.2f %s" % (result, self.options[option]))
+            self.set_speed.emit(result, option)
+        except ValueError:
+            self.log_message_sig.emit("Invalid speed value")
+            
     def offset_changed(self):
         
-        result = float(self.le_offs.text())
-        self.set_offset.emit(result)
-            
+        try:
+            result = float(self.le_offs.text())
+            self.set_offset.emit(result)
+            self.log_message_sig.emit("Offset changed: %0.2f" % result)
+        except ValueError:
+            self.log_message_sig.emit("Invalid offset value")           
         
-    def pitch_changed(self):
-        
-        result = float(self.le_pitch.text())
-        self.set_pitch.emit(result)
+    def pitch_changed(self):        
+        try:
+            result = float(self.le_pitch.text())
+            self.set_pitch.emit(result)
+            self.log_message_sig.emit("Pitch changed: %0.2f" % result)
+        except ValueError:
+            self.log_message_sig.emit("Invalid pitch value")
         
     def start_stop(self):
-        print("Start/Stop clicked")
+        
         if self.b_start == False:    
             self.btn1.setText("Stop")
             self.b_start = True
@@ -141,5 +153,6 @@ class controlButtons(QFrame):
         self.start_sig.emit()
 
     def reset(self):
-        print("reset clicked")
+        
+        self.log_message_sig.emit("Timer reset")
         self.reset_sig.emit()

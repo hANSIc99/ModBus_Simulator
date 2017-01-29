@@ -85,8 +85,6 @@ class Main(QWidget):
         reactor.listenTCP(address[1], factory, interface=address[0])                
         
         Thread(target=reactor.run).start()
-
-        print("Starting Modbus TCP Server on %s:%s" % address)
         
         
     def closeEvent(self, event):

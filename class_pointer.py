@@ -28,8 +28,6 @@ class PointerWidget(QFrame):
         
     def initUI(self):        
         """ set the variables inherited from QWidget """       
-        print("set pointer")
-
         
         self.setMinimumSize(150, 150)
         self.setMaximumSize(150, 150)
@@ -58,9 +56,7 @@ class PointerWidget(QFrame):
  
 
     def drawBrushes(self, qp):
-        """
-        print("drawBruches with x: %f, y: %f" % (self.pointer.x(), self.pointer.y()))
-        """
+
         brush = QBrush(Qt.SolidPattern)
         brush.setColor(QColor('White'))
         qp.setBrush(brush)

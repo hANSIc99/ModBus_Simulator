@@ -79,7 +79,11 @@ class DataClient(QWidget):
         self.buttons = controlButtons()
         self.modbus = ModBusClient()
         self.lcd = Lcd()
+        """
+        connect log messages from controlButtons to arive here
+        """
         
+        self.buttons.log_message_sig.connect(self.log_message)
         
         hbox = QHBoxLayout()
         hbox.addWidget(self.buttons)
@@ -90,7 +94,6 @@ class DataClient(QWidget):
         hbox.setAlignment(Qt.AlignTop)
         
         self.buttons.start_sig.connect(self.toggleTimer)
-        self.buttons.start_sig.connect(self.modbus.toggle_client)
         self.buttons.reset_sig.connect(self.resetTimer)
         self.buttons.set_speed.connect(self.set_speed)
         self.buttons.set_offset.connect(self.set_offset)
@@ -110,7 +113,7 @@ class DataClient(QWidget):
         
 
     def resetTimer(self):
-        print("resetTimer clicked")
+
         self.step = 0.0
         self.ptr.setValue(self.step)
 
@@ -131,15 +134,14 @@ class DataClient(QWidget):
 
     def toggleTimer(self):
         
-        print("toggleTimer clicked")
         
         if self.b_start == False:
             self.timer.start(self.timer_speed, self)
             self.log_message("Starting ModBus Client")
             self.log_message("Maximum Value: %0.2f" % (self.pitch + self.offset))
             self.log_message("Minimum Value: %0.2f" % ((-1) * self.pitch + self.offset))
-            print("Pitch = " + str(self.pitch))
-            print("Speed = " + str(self.speed_value) + " " + self.speed_mode[self.speed_opt])
+            register = int(self.modbus.register)
+            self.log_message("Values on register: %d - %d" % (register, register+3))
             
             self.b_start = True
         else:
@@ -149,7 +151,6 @@ class DataClient(QWidget):
             
     def set_speed(self, value, option):
 
-        print("Set speed to " + str(value) + " option: " + str(option))
         self.speed_opt = option
         self.speed_value = value
         if option == 0:
@@ -178,12 +179,10 @@ class DataClient(QWidget):
 
     def set_pitch(self, new_pitch):
         
-        print("Set pitch to: " + str(new_pitch))
         self.pitch = new_pitch
         
     def set_offset(self, new_offset):
         
-        print("Set offset to: " + str(new_offset))
         self.offset = new_offset
         
     def set_server(self, server):
@@ -206,14 +205,9 @@ class DataClient(QWidget):
         """
         
         low_word = int((res_val % 1) * 1e9)
-        
-        
+                
         self.reg_2 = low_word >> 16
         self.reg_3 = low_word & 0xffff
-        
-        
-        
-        print("low_word = " + str(low_word) + " reg_0 = " + str(self.reg_0) + " reg_1 = " + str(self.reg_1))
         
         self.lcd.set_reg(self.reg_0, self.reg_1, self.reg_2, self.reg_3)
         """
