@@ -136,12 +136,14 @@ class DataClient(QWidget):
         if self.b_start == False:
             self.timer.start(self.timer_speed, self)
             self.log_message("Starting ModBus Client")
-            print("Start ModBus:\nOffset = " + str(self.offset))
+            self.log_message("Maximum Value: %0.2f" % (self.pitch + self.offset))
+            self.log_message("Minimum Value: %0.2f" % ((-1) * self.pitch + self.offset))
             print("Pitch = " + str(self.pitch))
             print("Speed = " + str(self.speed_value) + " " + self.speed_mode[self.speed_opt])
             
             self.b_start = True
         else:
+            self.log_message("Stopping ModBus Client")
             self.timer.stop()
             self.b_start = False
             

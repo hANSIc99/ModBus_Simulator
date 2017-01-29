@@ -184,7 +184,7 @@ class ModBusClient(QFrame):
             
     def log_message(self, message):
         
-        text = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')) + " : " + message
+        text = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + " : " + message)       
         self.text_out.append(text)
         
         

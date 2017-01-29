@@ -3,7 +3,14 @@
 Created on Sat Jan 28 08:52:22 2017
 
 @author: Stephan
+
+
+pymodbus.datastore.context.py edited
+pymodbus.server.async.py edited
+
 """
+
+
 
 import sys, random, math
 from PyQt5.QtWidgets import (QApplication, QWidget,
@@ -31,7 +38,7 @@ import atexit
 
 class Main(QWidget): 
     
-    
+    log_message_sig = pyqtSignal(str)
     
     def __init__(self):
 
@@ -39,6 +46,7 @@ class Main(QWidget):
         self.initServer()
         self.initUI()
         
+        self.log_message_sig.connect(self.data_1.log_message)
         
     def initUI(self):        
         
@@ -63,19 +71,18 @@ class Main(QWidget):
             co = ModbusSequentialDataBlock(0, [17]*100),    
             hr = ModbusSequentialDataBlock(0, [17]*100),
             ir = ModbusSequentialDataBlock(0, [17]*100))
+        """
+        construction site: mutliple data sources and log windows must be possible
+        """
+        store.callback_log(self.log_message)
         
         self.context = ModbusServerContext(slaves=store, single=True)
 
         address = "", Defaults.Port
         framer  = ModbusSocketFramer
-        factory = ModbusServerFactory(self.context, framer, identity=None)
-
-        factory.d = defer.Deferred()
-        factory.d.addCallBack(self.ass)
+        factory = ModbusServerFactory(self.context, framer, identity=None)                
         
-        reactor.listenTCP(address[1], factory, interface=address[0])
-        
-        
+        reactor.listenTCP(address[1], factory, interface=address[0])                
         
         Thread(target=reactor.run).start()
 
@@ -92,7 +99,11 @@ class Main(QWidget):
             event.accept()
         else:
             event.ignore()
+            
+    def log_message(self, message):
         
+        self.log_message_sig.emit(message)
+
         
 if __name__ == '__main__':
     
