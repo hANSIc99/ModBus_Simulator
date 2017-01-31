@@ -1,1 +1,1 @@
-pyinstaller -F --noconsole --destpath .\bin -n ModBus_Simulator_1.0 main.py
+pyinstaller -F --noconsole --distpath .\bin -n ModBus_Simulator_1.0 main.py
