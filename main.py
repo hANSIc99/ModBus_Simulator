@@ -43,15 +43,19 @@ class Main(QWidget):
     def __init__(self):
 
         super().__init__()
-        self.initServer()
-        self.initUI()
-        
+
+        self.initServer()      
+        self.initUI()            
         self.log_message_sig.connect(self.data_1.log_message)
+        
+
         
     def initUI(self):        
         
         self.data_1 = DataClient()
         self.data_1.set_server(self.context)
+        
+        
         vbox = QVBoxLayout()
         vbox.addWidget(self.data_1)
         

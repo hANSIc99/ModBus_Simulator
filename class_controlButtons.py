@@ -30,7 +30,7 @@ class controlButtons(QFrame):
     set_offset  =    pyqtSignal(float)
     set_pitch   =    pyqtSignal(float)
     
-    options = ["rad/min", "rpm", "Hz"]
+    options = ["rad/min", "rad/h", "1/min", "1/h", "1/day"]
     
     
     def __init__(self):
@@ -83,9 +83,11 @@ class controlButtons(QFrame):
         self.valid = QDoubleValidator(self)
         
         self.speed_box = QComboBox(self)
-        self.speed_box.addItem("rad/min")
-        self.speed_box.addItem("rpm")
-        self.speed_box.addItem("Hz")
+        self.speed_box.addItem(self.options[0])
+        self.speed_box.addItem(self.options[1])
+        self.speed_box.addItem(self.options[2])
+        self.speed_box.addItem(self.options[3])
+        self.speed_box.addItem(self.options[4])
         self.speed_box.move(120, 120)
         """
         Connect speed_box to speed_changed to trigger an update

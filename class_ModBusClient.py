@@ -96,9 +96,11 @@ class ModBusClient(QFrame):
         
         hbox_0 = QHBoxLayout()
         hbox_0.addWidget(lbl_0)
+        hbox_0.setSpacing(10)
         
         hbox_1 = QHBoxLayout()
         hbox_1.addWidget(lbl_1)
+        hbox_1.setSpacing(10)
         
 
         

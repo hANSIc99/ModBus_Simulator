@@ -38,19 +38,19 @@ class Communicate(QObject):
     
     closeApp = pyqtSignal()
     
-class DataClient(QWidget):
+class DataClient(QWidget, Thread):
     
     """
     const (not changeable yet)
     timer_speed default value = 100
     """
-    timer_speed = 500;
-    timer_step = 0.1;
+    timer_speed = 500
+    timer_step = 1 / 120
     offset = 0;
     pitch = 1;
     speed_opt = 0;
     speed_value = 0;
-    speed_mode = ["rad/min", "rpm", "Hz"]
+    speed_mode = ["rad/min", "rad/h", "1/min", "1/h", "1/day"]
 
     reg_0 = 0
     reg_1 = 0
@@ -63,8 +63,15 @@ class DataClient(QWidget):
     
     def __init__(self):
         """ call the instructor of QWidget """
-        super().__init__()
+        super(DataClient, self).__init__()
+        print("thats it")
         """ call particular method """ 
+        
+        self.initUI()
+        
+        
+    def run(self):
+        
         self.initUI()
         
     def initUI(self):        
@@ -159,23 +166,39 @@ class DataClient(QWidget):
             Value in rad/min
             """
 
-            self.timer_step = value / 300
+            self.timer_step = value  /  120
 
         elif option == 1:
-            """
-            Value in rpm
-            300 =^ 1 min (timer step = 200 ms)
-            """
-            self.timer_step = (math.pi * 2.0 * value  ) / 300
-
-        elif option == 2:
             
             """
-            Value in Hz
+            Value in rad/h
+            """
+            self.timer_step = value / 7200
+            
+        elif option == 2:
+            """
+            Value in rpm
+            120 =^ 1 min (timer step = 500 ms)
+            """
+            self.timer_step = (math.pi * 2.0 * value  ) / 120
+
+        elif option == 3:
+            
+            """
+            Value in h^(-1)
             60 =^ 1 sec (timer step = 200 ms)
             """
             
-            self.timer_step = (2.0 * value  ) / 3
+            self.timer_step = (math.pi * 2.0 * value  ) / 7200
+
+        elif option == 4:
+            
+            """
+            Value in h^(-1)
+            60 =^ 1 sec (timer step = 200 ms)
+            """
+            
+            self.timer_step = (math.pi * 2.0 * value  ) / 172800
 
     def set_pitch(self, new_pitch):
         
